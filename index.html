@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Gifts</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: rgb(207, 169, 147);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 1s ease; /* ✅ Smooth transition */
+}
+    .container {
+      position: relative;
+      text-align: center;
+    }
+
+    button#showImageBtn {
+      position: relative;
+      background-color: #ff6f61;
+      color: white;
+      font-size: 1.3rem;
+      padding: 14px 36px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 111, 97, 0.6);
+      overflow: hidden;
+      transition: color 0.4s ease;
+    }
+    button#showImageBtn:focus {
+      outline: none;
+      /* filter: drop-shadow(0 0 10px rgb(255, 1, 1)); */
+      box-shadow: 0 4px 80px 3px rgb(255, 5, 5);
+    }
+
+    button#showImageBtn .fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      background-color: #ec2e2e;
+      z-index: 1;
+      border-radius: 50px;
+      transition: width 2s ease, left 2s ease;
+    }
+    button#showImageBtn.filling .fill {
+      width: 100%;
+      left: 0;
+    }
+
+    button#showImageBtn span {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      transition: color 2s ease;
+    }
+    button#showImageBtn.filling span {
+      color: white;
+    }
+
+    .floating-image {
+      position: absolute;
+      bottom: 100%;
+      transform: translateY(100%) scale(0.6);
+      margin-bottom: 1rem;
+      width: 110px;
+      height: 110px;
+      border-radius: 60px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+      border: 1px solid white;
+      background-color: white;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: auto;
+      user-select: none;
+      transition: opacity 0.5s ease, transform 0.6s ease;
+      animation: floatUpDown 3s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    .floating-image.show {
+      opacity: 1;
+      transform: translateY(-15px) scale(1);
+    }
+    .floating-image.hide {
+      opacity: 0;
+      transform: translateY(60px) scale(0.6);
+      transition: opacity 0s ease, transform 0s ease;
+}
+
+
+    .floating-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% {
+        transform: translateY(-15px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+      }
+      50% {
+        transform: translateY(0px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.329);
+      }
+    }
+
+    @media (max-width: 400px), (max-height: 600px) {
+      button#showImageBtn {
+        font-size: 1.1rem;
+        padding: 12px 30px;
+      }
+      .floating-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 0.75rem;
+        border-radius: 15px;
+        border-width: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="showImageBtn" aria-label="Show Floating Images">
+      <span>Click Me!</span>
+      <div class="fill"></div>
+    </button>
+  </div>
+
+  <script>
+    (function () {
+      const btn = document.getElementById('showImageBtn');
+      const spanText = btn.querySelector('span');
+      const fillDiv = btn.querySelector('.fill');
+      const originalBodyBg = getComputedStyle(document.body).backgroundColor;
+      const originalHtmlBg = getComputedStyle(document.documentElement).backgroundColor;
+
+      let floatingImages = [];
+      let isShowing = false;
+  
+      const imageSources = [
+        // { src: 'image1.jpg', href: 'page1.html' },
+        { src: 'image2.jpg', href: 'letter.html' }
+      ];
+  
+      btn.addEventListener('click', () => {
+        if (isShowing) {
+          btn.classList.remove('filling');
+          spanText.textContent = 'Click Me!';
+          spanText.style.color = '';
+          isShowing = false;
+  
+          fillDiv.style.transition = 'width 0.5s ease, left 0.5s ease';
+          fillDiv.style.width = '0';
+          fillDiv.style.left = '50%';
+
+          document.body.style.backgroundColor = originalBodyBg;
+          document.documentElement.style.backgroundColor = originalHtmlBg;
+
+          // document.body.style.backgroundColor = '#rgb(207, 169, 147)'; // light pink
+  
+          floatingImages.forEach(img => {
+            img.classList.remove('show');
+            img.classList.add('hide');
+            setTimeout(() => img.remove(), 100); // Wait for animation to finish
+          });
+
+          floatingImages = [];
+  
+        } else {
+          btn.classList.add('filling');
+          fillDiv.style.transition = 'width 2s ease, left 2s ease';
+          fillDiv.style.width = '100%';
+          fillDiv.style.left = '0';
+          spanText.style.color = 'white';
+          spanText.textContent = 'Happy Mother\'s Day';
+
+              // Change background after click
+          document.body.style.backgroundColor = 'rgb(167, 111, 89)'; // Soft pink
+          document.documentElement.style.backgroundColor = 'rgb(167, 111, 89)';
+  
+          imageSources.forEach((item, index) => {
+            const anchor = document.createElement('a');
+            anchor.href = item.href || '#';
+            anchor.className = 'floating-image';
+            anchor.style.left = `${29 + (index * 90)}%`;
+  
+            const img = document.createElement('img');
+            img.src = item.src;
+            img.alt = `Floating image ${index + 1}`;
+  
+            anchor.appendChild(img);
+            btn.parentElement.appendChild(anchor);
+            floatingImages.push(anchor);
+          });
+  
+          setTimeout(() => {
+            floatingImages.forEach(img => img.classList.add('show'));
+          }, 1900);
+  
+          isShowing = true;
+        }
+      });
+    })();
+  </script>
+  
+  </script>
+</body>
+</html>

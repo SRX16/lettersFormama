@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>letter</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="envelope-wrapper">
+            <div class="envelope">
+                <div class="letter">
+                    <div class="text">
+                        <strong>Happy Mother’s Day, Mama!</strong>
+                        <p>
+                            This will be my first gift to you for Mother's Day and I also want to thank you for all the times you keep providing for us and You also somehow manage to care about everything. You're amazing Ma because you make delicious meals. I love you, Ma — for real.
+                        </p>
+                        <img src= "gif7.gif" id="bg-gif" alt="Background GIF" />
+                    </div>
+                </div>
+            </div>
+            <div class="heart"></div>
+        </div>
+    </div>
+    <script>
+        const envelope = document.querySelector('.envelope-wrapper');
+        envelope.addEventListener('click', () => {
+            envelope.classList.toggle('flap');
+        });
+    </script>
+</body>
+</html>
